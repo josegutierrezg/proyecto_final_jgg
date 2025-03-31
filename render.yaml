@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: mi-api-lol
+    env: docker
+    plan: free
+    repo: https://github.com/tu-usuario/tu-repo
+    branch: main
+    buildCommand: |
+      apt-get update && apt-get install -y curl unzip
+      curl -sS https://getcomposer.org/installer | php
+      php composer.phar install --no-dev --optimize-autoloader
+      php artisan migrate --force
+    startCommand: php artisan serve --host 0.0.0.0 --port 10000
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        generateValue: true
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        sync: false
+      - key: DB_DATABASE
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
