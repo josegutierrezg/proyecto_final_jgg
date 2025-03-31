@@ -5,13 +5,18 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Equipo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class EquipoController extends Controller
 {
     // Obtener todos los equipos
+
     public function index()
     {
-        $equipos = Equipo::with('jugadores')->get();
+        $equipos = Cache::remember('equipos_con_jugadores', 60, function () {
+            return Equipo::with('jugadores')->get();
+        });
+    
         return response()->json($equipos);
     }
 
